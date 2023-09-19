@@ -1,29 +1,28 @@
 (ns build
-  (:require
-   [clojure.string :as str]
-   [org.corfield.build :as bb]))
+  (:require [clojure.string :as str]
+            [clojure.tools.build.api :as b]))
 
 (def lib 'org.last-try/discord-appender)
+(def dirty? (not (str/blank? (b/git-process {:git-args "status --porcelain"}))))
+(def version (cond-> (or (b/git-process {:git-args "describe --tags --abbrev=0"})
+                         (b/git-process {:git-args "rev-parse --short HEAD"}))
+               dirty? (str "-dirty")))
+(def class-dir "target/classes")
+(def basis (b/create-basis {:project "deps.edn"}))
+(def jar-base (format "target/%s.jar" (name lib)))
+(def jar-file (format "target/%s-%s.jar" (name lib) version))
 
-(def release-marker "Release-")
+(defn clean [_]
+  (b/delete {:path "target"}))
 
-(defn extract-version [tag]
-  (str/replace-first tag release-marker ""))
-
-(defn maybe-deploy [opts]
-  (if-let [tag (System/getenv "CIRCLE_TAG")]
-    (do
-      (println "Found tag " tag)
-      (if (re-find (re-pattern release-marker) tag)
-        (do
-          (println "Deploying to clojars...")
-          (-> opts
-              (assoc :lib lib :version (extract-version tag))
-              (bb/jar)
-              (bb/deploy)))
-        (do
-          (println "Tag is not a release tag, skipping deploy")
-          opts)))
-    (do
-      (println "No tag found, skipping deploy")
-      opts)))
+(defn jar [_]
+  (b/write-pom {:class-dir class-dir
+                :lib lib
+                :version version
+                :basis basis
+                :src-dirs ["src"]})
+  (b/copy-dir {:src-dirs ["src" "resources"]
+               :target-dir class-dir})
+  (b/jar {:class-dir class-dir
+          :jar-file jar-file})
+  (b/copy-file {:src jar-file :target jar-base}))
