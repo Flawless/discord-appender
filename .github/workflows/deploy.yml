@@ -39,7 +39,13 @@ jobs:
       run: clojure -T:build jar
 
     - name: Deploy
-      run: clojure -X:deploy
       env:
         CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
         CLOJARS_USERNAME: ${{ env.CLOJARS_USERNAME }}
+      run: echo $CLOJARS_USERNAME
+
+    - name: Deploy
+      env:
+        CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
+        CLOJARS_USERNAME: ${{ env.CLOJARS_USERNAME }}
+      run: clojure -X:deploy
