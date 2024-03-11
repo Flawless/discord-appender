@@ -16,6 +16,7 @@
   (b/delete {:path "target"}))
 
 (defn jar [_]
+  (println "building" version)
   (b/write-pom {:class-dir class-dir
                 :lib lib
                 :version version
