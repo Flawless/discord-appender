@@ -1,7 +1,7 @@
 {:paths ["src"]
  :deps {clj-http/clj-http {:mvn/version "3.12.3"}}
  :aliases
- {:build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.4" :git/sha "76b78fe"}}
+ {:build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.0"}}
           :ns-default build}
   :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "0.2.1"}}
            :exec-fn deps-deploy.deps-deploy/deploy

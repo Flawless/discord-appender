@@ -1,0 +1,4 @@
+{:min-bb-version "0.9.159"
+ :tasks {all (do (clojure "-T:build clean")
+               (clojure "-T:build jar")
+               (clojure "-X:deploy"))}}

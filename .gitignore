@@ -15,3 +15,4 @@ pom.xml.asc
 .lsp/
 /discord-appender-0.1.0.pom
 .clj-kondo/
+/pom.properties
