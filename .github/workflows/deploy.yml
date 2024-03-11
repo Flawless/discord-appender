@@ -4,6 +4,7 @@ on:
   push:
     branches: [ "master" ]
 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -40,5 +41,5 @@ jobs:
     - name: Deploy
       run: clojure -X:deploy
       env:
-        CLOJARS_PASSWORD=${{ secrets.CLOJARS_PASSWORD }}
-        CLOJARS_USERNAME=${{ env.CLOJARS_USERNAME }}
+        CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
+        CLOJARS_USERNAME: ${{ env.CLOJARS_USERNAME }}
